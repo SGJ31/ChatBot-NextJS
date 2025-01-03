@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# **Chatbot con Next.js**
 
-## Getting Started
+## **Descripción**
+Este proyecto es un chatbot simple que utiliza **Next.js** como framework y un archivo CSV para responder preguntas predefinidas. Está diseñado para ser fácil de usar y personalizar, permitiendo a los usuarios interactuar con el chatbot a través de una interfaz web simple.
 
-First, run the development server:
+## **Características**
+- **Backend:** Utiliza un API Route de Next.js para manejar las preguntas.
+- **Frontend:** Interfaz interactiva donde los usuarios pueden escribir sus preguntas.
+- **Respuestas:** El chatbot responde a preguntas específicas definidas en un archivo CSV.
+- **Tecnologías utilizadas:** Next.js, TailwindCSS, Papaparse, React Query.
 
+## **Tecnologías**
+- **Framework:** Next.js
+- **Frontend:** React, TailwindCSS
+- **Backend:** Next.js API Routes
+- **Librerías adicionales:** Papaparse (para leer el archivo CSV), React Query (para manejo de estado)
+- **Base de datos:** Archivo CSV para almacenar preguntas y respuestas.
+
+## **Instalación**
+
+### 1. Clona el repositorio
 ```bash
+git clone https://github.com/tu-usuario/chatbot-nextjs.git
+
+### 2. Navega al directorio del proyecto
+cd chatbot-nextjs 
+
+### 3. Instala las dependencias
+npm install
+
+### 4. Configura TailwindCSS
+npx tailwindcss init -p
+
+Luego, asegurate de agregar las reglas de TailwindCSS en el archivo global.css
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+### 5. Ejecuta el proyecto
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+El proyecto estará disponible en http://localhost:3000.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Estructura del Proyecto
 
-## Learn More
+/src
+  /app
+    /api/chatbot/route.ts    → Endpoint que maneja las preguntas.
+    /page.tsx                → Componente principal de la interfaz.
+    /layout.tsx              → Estructura de la página.
+  /styles
+    /globals.css             → Configuración de TailwindCSS.
+  
+/public
+  /data.csv                  → Archivo CSV con las preguntas y respuestas.
 
-To learn more about Next.js, take a look at the following resources:
+tailwind.config.js           → Configuración de TailwindCSS.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## **Como Funciona**
 
-## Deploy on Vercel
+1. El usuario escribe una pregunta en la interfaz del chatbot.
+2. La pregunta es enviada al backend a través de un API Route.
+3. El backend busca la pregunta en el archivo CSV.
+4. Si la pregunta es encontrada, se devuelve la respuesta correspondiente.
+5. Si no se encuentra la pregunta, el chatbot responde con un mensaje genérico: "Lo siento, no tengo esa información."
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## **Agregar Más Preguntas**
+
+Para agregar nuevas preguntas y respuestas:
+
+1. Abre el archivo public/data.csv.
+2. Añade una nueva fila con el formato:
+
+Pregunta,Respuesta
+
+3. Guarda el archivo y recarga la página para probar las nuevas preguntas.
+
+
+Futuras Mejoras
+**Mejorar las búsquedas: Implementar una búsqueda más flexible usando procesamiento de lenguaje natural.**
+**Base de datos: Conectar el chatbot a una base de datos como MongoDB o PostgreSQL.**
+**Integración NLP: Integrar una librería de procesamiento de lenguaje natural para preguntas más complejas.**
+
+
