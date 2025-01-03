@@ -21,9 +21,12 @@ Este proyecto es un chatbot simple que utiliza **Next.js** como framework y un a
 ### 1. Clona el repositorio
 ```bash
 git clone https://github.com/tu-usuario/chatbot-nextjs.git
+```
 
 ### 2. Navega al directorio del proyecto
+```bash
 cd chatbot-nextjs 
+```
 
 ### 3. Instala las dependencias
 npm install
