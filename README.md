@@ -29,25 +29,35 @@ cd chatbot-nextjs
 ```
 
 ### 3. Instala las dependencias
+```bash	
 npm install
+```
 
 ### 4. Configura TailwindCSS
+Si es la primera vez que usas TailwindCSS, puedes inicializar su configuración ejecutando:
+```bash
 npx tailwindcss init -p
+```
 
 Luego, asegurate de agregar las reglas de TailwindCSS en el archivo global.css
 
+```css
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+```
 
 ### 5. Ejecuta el proyecto
+Para iniciar el servidor en modo de desarrollo:
+```bash
 npm run dev
+```
 El proyecto estará disponible en http://localhost:3000.
 
 
 
-Estructura del Proyecto
-
+## **Estructura del Proyecto**
+```bash
 /src
   /app
     /api/chatbot/route.ts    → Endpoint que maneja las preguntas.
@@ -60,7 +70,7 @@ Estructura del Proyecto
   /data.csv                  → Archivo CSV con las preguntas y respuestas.
 
 tailwind.config.js           → Configuración de TailwindCSS.
-
+```
 
 ## **Como Funciona**
 
@@ -78,14 +88,16 @@ Para agregar nuevas preguntas y respuestas:
 1. Abre el archivo public/data.csv.
 2. Añade una nueva fila con el formato:
 
+```bash
 Pregunta,Respuesta
+```
 
 3. Guarda el archivo y recarga la página para probar las nuevas preguntas.
 
 
-Futuras Mejoras
-**Mejorar las búsquedas: Implementar una búsqueda más flexible usando procesamiento de lenguaje natural.**
-**Base de datos: Conectar el chatbot a una base de datos como MongoDB o PostgreSQL.**
-**Integración NLP: Integrar una librería de procesamiento de lenguaje natural para preguntas más complejas.**
+## **Futuras Mejoras**
+- **Mejorar las búsquedas:** Implementar una búsqueda más flexible usando procesamiento de lenguaje natural.
+- **Base de datos:** Conectar el chatbot a una base de datos como MongoDB o PostgreSQL.
+- **Integración NLP:** Integrar una librería de procesamiento de lenguaje natural para preguntas más complejas.
 
 
