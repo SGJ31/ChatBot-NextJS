@@ -1,123 +1,83 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-import Papa from 'papaparse';
+import OpenAI from 'openai';
+import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
-// Función para calcular la distancia de Levenshtein (para tolerancia a errores ortográficos)
-const levenshteinDistance = (str1: string, str2: string) => {
-  const matrix = Array(str2.length + 1).fill(null).map(() => 
-    Array(str1.length + 1).fill(null)
-  );
+// Initialize OpenAI client
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
-  for (let i = 0; i <= str1.length; i++) matrix[0][i] = i;
-  for (let j = 0; j <= str2.length; j++) matrix[j][0] = j;
-
-  for (let j = 1; j <= str2.length; j++) {
-    for (let i = 1; i <= str1.length; i++) {
-      const substitutionCost = str1[i - 1] === str2[j - 1] ? 0 : 1;
-      matrix[j][i] = Math.min(
-        matrix[j][i - 1] + 1,
-        matrix[j - 1][i] + 1,
-        matrix[j - 1][i - 1] + substitutionCost
-      );
-    }
-  }
-
-  return matrix[str2.length][str1.length];
-};
-
-  // Función para normalizar texto (remover acentos y caracteres especiales)
-  const normalizeText = (text: string) => {
-    return text
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') // Remove accents
-      .replace(/[^a-z0-9\s]/g, '');     // Remove special characters
-  };
-
-// Función para calcular la similitud entre dos strings
-const similarity = (str1: string, str2: string) => {
-  const s1 = normalizeText(str1);
-  const s2 = normalizeText(str2);
-  
-  const words1 = s1.split(' ').filter(word => word.length > 2); // Ignore very short words
-  const words2 = s2.split(' ').filter(word => word.length > 2);
-  
-  let matches = 0;
-  for (const word1 of words1) {
-    for (const word2 of words2) {
-      // Consider words similar if they share most characters
-      if (levenshteinDistance(word1, word2) <= Math.min(2, Math.floor(word1.length * 0.3))) {
-        matches++;
-        break;
-      }
-    }
-  }
-  
-  return matches / Math.max(words1.length, words2.length);
+const CATEGORY_PROMPTS = {
+  Torneos: "Eres un experto especializado en torneos de fútbol. Tu función es proporcionar información detallada sobre competencias como Copas del Mundo, Champions League, ligas nacionales y torneos internacionales. Enfoca TODAS tus respuestas desde la perspectiva de los torneos, incluyendo datos sobre ganadores, resultados históricos, formatos de competición y momentos memorables. Si la pregunta no menciona un torneo específico, relaciona la respuesta con torneos relevantes.",
+  Jugadores: "Eres un experto especializado en jugadores de fútbol. Tu función es proporcionar información detallada sobre futbolistas, tanto actuales como históricos. Enfoca TODAS tus respuestas desde la perspectiva de los jugadores, incluyendo estadísticas individuales, logros personales, récords, trayectorias y datos biográficos. Si la pregunta no menciona un jugador específico, relaciona la respuesta con jugadores relevantes.",
+  Equipos: "Eres un experto especializado en equipos de fútbol. Tu función es proporcionar información detallada sobre clubes y selecciones nacionales. Enfoca TODAS tus respuestas desde la perspectiva de los equipos, incluyendo historia, títulos, estadios, jugadores legendarios y rivalidades. Si la pregunta no menciona un equipo específico, relaciona la respuesta con equipos relevantes.",
+  Estadísticas: "Eres un experto especializado en estadísticas del fútbol. Tu función es proporcionar datos estadísticos precisos y análisis numéricos. Enfoca TODAS tus respuestas desde la perspectiva estadística, incluyendo goles, asistencias, posesión, títulos, récords y otras métricas. Incluye siempre números y comparativas cuando sea posible.",
+  Historia: "Eres un experto especializado en la historia del fútbol. Tu función es proporcionar información sobre la evolución histórica del deporte. Enfoca TODAS tus respuestas desde una perspectiva histórica, incluyendo orígenes, evolución de reglas, momentos históricos y cambios en el juego. Relaciona siempre la respuesta con el contexto histórico.",
+  Tácticas: "Eres un experto especializado en tácticas de fútbol. Tu función es explicar aspectos tácticos y estratégicos del juego. Enfoca TODAS tus respuestas desde la perspectiva táctica, incluyendo formaciones, estilos de juego, estrategias y roles de jugadores. Si la pregunta no menciona una táctica específica, relaciona la respuesta con conceptos tácticos relevantes."
 };
 
 export async function POST(request: Request) {
-  const { question } = await request.json();
+  try {
+    const { question, category } = await request.json();
 
-  const filePath = path.join(process.cwd(), 'public', 'data.csv');
-  const fileContent = fs.readFileSync(filePath, 'utf-8');
-
-  const parsedData = Papa.parse(fileContent, { header: true });
-  const data = parsedData.data as { Pregunta: string; Respuesta: string }[];
-
-  // Buscar la mejor coincidencia
-  let bestMatch = null;
-  let highestSimilarity = 0;
-
-  data.forEach((item) => {
-    const similarityScore = similarity(item.Pregunta, question);
-    if (similarityScore > highestSimilarity && similarityScore > 0.4) {
-      highestSimilarity = similarityScore;
-      bestMatch = item;
+    if (!question) {
+      return NextResponse.json(
+        { error: 'La pregunta es requerida' },
+        { status: 400 }
+      );
     }
-  });
 
-  if (bestMatch) {
-    return NextResponse.json({ answer: bestMatch.Respuesta });
-  } else {
-    return NextResponse.json({
-      answer: 'Lo siento, no tengo esa información.',
+    // Construir el prompt base y específico de la categoría
+    let systemPrompt = category && CATEGORY_PROMPTS[category as keyof typeof CATEGORY_PROMPTS]
+      ? CATEGORY_PROMPTS[category as keyof typeof CATEGORY_PROMPTS]
+      : "Eres un experto chatbot de fútbol con conocimiento profundo del deporte.";
+
+    // Añadir instrucciones generales
+    systemPrompt += " Proporciona información precisa y actualizada. Mantén tus respuestas concisas y atractivas. Si la pregunta es ambigua, pide aclaraciones. Tus respuestas deben estar en el mismo idioma que la pregunta. Si la pregunta no está relacionada con el fútbol, indica amablemente que solo puedes discutir temas de fútbol.";
+
+    const messages: ChatCompletionMessageParam[] = [
+      {
+        role: "system",
+        content: systemPrompt
+      }
+    ];
+
+    // Si hay una categoría seleccionada, añadir un mensaje de contexto
+    if (category) {
+      messages.push({
+        role: "user",
+        content: `Te haré una pregunta sobre fútbol relacionada con la categoría ${category}. Por favor, asegúrate de enfocar tu respuesta desde la perspectiva de ${category}.`
+      } as ChatCompletionMessageParam, {
+        role: "assistant",
+        content: `Entendido. Enfocaré mi respuesta desde la perspectiva de ${category}. ¿Cuál es tu pregunta?`
+      } as ChatCompletionMessageParam);
+    }
+
+    // Añadir la pregunta del usuario
+    messages.push({
+      role: "user",
+      content: question
+    } as ChatCompletionMessageParam);
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: messages,
+      temperature: 0.7,
+      max_tokens: 500
     });
+
+    const answer = completion.choices[0]?.message?.content || 'Lo siento, no pude generar una respuesta.';
+    return NextResponse.json({ answer });
+
+  } catch (error) {
+    console.error('Error:', error);
+    return NextResponse.json(
+      { error: 'Hubo un error al procesar tu pregunta' },
+      { status: 500 }
+    );
   }
 }
 
 export async function GET(request: Request) {
-  const filePath = path.join(process.cwd(), 'public', 'data.csv');
-  const fileContent = fs.readFileSync(filePath, 'utf-8');
-
-  const parsedData = Papa.parse(fileContent, { header: true });
-  const data = parsedData.data as { Pregunta: string; Respuesta: string }[];
-  // Sort questions by similarity if a search parameter is provided
-  const { searchParams } = new URL(request.url);
-  const searchQuery = searchParams.get('search') || '';
-
-  console.log(searchQuery);
-
-  if (searchQuery) {
-    const matches = data
-      .map(item => ({
-        question: item.Pregunta,
-        similarity: similarity(item.Pregunta, searchQuery)
-      }));
-    
-    console.log('Search query:', searchQuery);
-    console.log('Matches:', matches);
-    
-    const sortedQuestions = matches
-      .filter(item => item.similarity > 0.2)
-      .sort((a, b) => b.similarity - a.similarity)
-      .map(item => item.question);
-
-    return NextResponse.json({ questions: sortedQuestions });
-  }
-  
-  // If no search query, return all questions
-  const questions = data.map(item => item.Pregunta);
-  return NextResponse.json({ questions });
+  return NextResponse.json({ questions: [] });
 }

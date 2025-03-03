@@ -1,103 +1,108 @@
-# **Chatbot con Next.js**
+# Soccer Guru - AI-Powered Soccer Knowledge Chatbot
 
-## **Descripción**
-Este proyecto es un chatbot simple que utiliza **Next.js** como framework y un archivo CSV para responder preguntas predefinidas. Está diseñado para ser fácil de usar y personalizar, permitiendo a los usuarios interactuar con el chatbot a través de una interfaz web simple.
+![Soccer Guru Logo](public/soccer-pattern.png)
 
-## **Características**
-- **Backend:** Utiliza un API Route de Next.js para manejar las preguntas.
-- **Frontend:** Interfaz interactiva donde los usuarios pueden escribir sus preguntas.
-- **Respuestas:** El chatbot responde a preguntas específicas definidas en un archivo CSV.
-- **Tecnologías utilizadas:** Next.js, TailwindCSS, Papaparse, React Query.
+## Overview
 
-## **Tecnologías**
-- **Framework:** Next.js
-- **Frontend:** React, TailwindCSS
-- **Backend:** Next.js API Routes
-- **Librerías adicionales:** Papaparse (para leer el archivo CSV), React Query (para manejo de estado)
-- **Base de datos:** Archivo CSV para almacenar preguntas y respuestas.
+Soccer Guru is an interactive AI-powered chatbot application built with Next.js that provides comprehensive information about soccer/football. The application offers a modern, user-friendly interface where users can ask questions about various aspects of the sport, from historical data to current statistics.
 
-## **Instalación**
+## Features
 
-### 1. Clona el repositorio
+- 🤖 **AI-Powered Responses**: Get intelligent answers to your soccer-related questions
+- 📱 **Responsive Design**: Beautiful and functional across all devices
+- 🎯 **Category-Based Questions**: Filter questions by specific categories:
+  - 🏆 Tournaments
+  - 👥 Players
+  - 🏟️ Teams
+  - 📊 Statistics
+  - 📜 History
+  - ⚔️ Tactics
+- 💡 **Smart Suggestions**: Get real-time question suggestions as you type
+- ⚡ **Quick Suggestions**: Access popular questions with one click
+- ✨ **Typing Animation**: Smooth typing animation for answers
+- 🎨 **Modern UI**: Clean and intuitive interface with a soccer-themed design
+
+## Technology Stack
+
+- **Frontend**: Next.js 13+ (React)
+- **Styling**: Tailwind CSS
+- **Language**: TypeScript
+- **API**: Next.js API Routes
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 14.0 or later
+- npm or yarn package manager
+
+### Installation
+
+1. Clone the repository:
 ```bash
-git clone https://github.com/tu-usuario/chatbot-nextjs.git
+git clone https://github.com/yourusername/soccer-guru.git
 ```
 
-### 2. Navega al directorio del proyecto
+2. Navigate to the project directory:
 ```bash
-cd chatbot-nextjs 
+cd soccer-guru
 ```
 
-### 3. Instala las dependencias
-```bash	
+3. Install dependencies:
+```bash
 npm install
+# or
+yarn install
 ```
 
-### 4. Configura TailwindCSS
-Si es la primera vez que usas TailwindCSS, puedes inicializar su configuración ejecutando:
-```bash
-npx tailwindcss init -p
-```
-
-Luego, asegurate de agregar las reglas de TailwindCSS en el archivo global.css
-
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
-
-### 5. Ejecuta el proyecto
-Para iniciar el servidor en modo de desarrollo:
+4. Run the development server:
 ```bash
 npm run dev
-```
-El proyecto estará disponible en http://localhost:3000.
-
-
-
-## **Estructura del Proyecto**
-```bash
-/src
-  /app
-    /api/chatbot/route.ts    → Endpoint que maneja las preguntas.
-    /page.tsx                → Componente principal de la interfaz.
-    /layout.tsx              → Estructura de la página.
-  /styles
-    /globals.css             → Configuración de TailwindCSS.
-  
-/public
-  /data.csv                  → Archivo CSV con las preguntas y respuestas.
-
-tailwind.config.js           → Configuración de TailwindCSS.
+# or
+yarn dev
 ```
 
-## **Como Funciona**
+5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
-1. El usuario escribe una pregunta en la interfaz del chatbot.
-2. La pregunta es enviada al backend a través de un API Route.
-3. El backend busca la pregunta en el archivo CSV.
-4. Si la pregunta es encontrada, se devuelve la respuesta correspondiente.
-5. Si no se encuentra la pregunta, el chatbot responde con un mensaje genérico: "Lo siento, no tengo esa información."
+## Usage
 
+1. Select a category (optional) to focus your questions on a specific aspect of soccer
+2. Type your question in the input field or select one of the quick suggestions
+3. Click "Consultar al Guru" or press Enter to get your answer
+4. The AI will process your question and provide a detailed response
 
-## **Agregar Más Preguntas**
+## Project Structure
 
-Para agregar nuevas preguntas y respuestas:
-
-1. Abre el archivo public/data.csv.
-2. Añade una nueva fila con el formato:
-
-```bash
-Pregunta,Respuesta
+```
+soccer-guru/
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   └── chatbot/
+│   │   └── page.tsx
+│   └── components/
+├── public/
+│   └── soccer-pattern.png
+├── styles/
+└── package.json
 ```
 
-3. Guarda el archivo y recarga la página para probar las nuevas preguntas.
+## Contributing
 
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## **Futuras Mejoras**
-- **Mejorar las búsquedas:** Implementar una búsqueda más flexible usando procesamiento de lenguaje natural.
-- **Base de datos:** Conectar el chatbot a una base de datos como MongoDB o PostgreSQL.
-- **Integración NLP:** Integrar una librería de procesamiento de lenguaje natural para preguntas más complejas.
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Built with Next.js and Tailwind CSS
+- Soccer pattern background and icons
+- All contributors and maintainers
+
+---
+
+Made with ⚽ by [Santiago Jaimes]
 
 
