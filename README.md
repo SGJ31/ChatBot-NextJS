@@ -17,7 +17,6 @@ Soccer Guru is an interactive AI-powered chatbot application built with Next.js 
   - 📊 Statistics
   - 📜 History
   - ⚔️ Tactics
-- 💡 **Smart Suggestions**: Get real-time question suggestions as you type
 - ⚡ **Quick Suggestions**: Access popular questions with one click
 - ✨ **Typing Animation**: Smooth typing animation for answers
 - 🎨 **Modern UI**: Clean and intuitive interface with a soccer-themed design
@@ -40,7 +39,7 @@ Soccer Guru is an interactive AI-powered chatbot application built with Next.js 
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/soccer-guru.git
+git clone https://github.com/SGJ31/ChatBot-NextJS
 ```
 
 2. Navigate to the project directory:
@@ -79,21 +78,18 @@ soccer-guru/
 │   ├── app/
 │   │   ├── api/
 │   │   │   └── chatbot/
-│   │   └── page.tsx
-│   └── components/
+│   │   │       └── route.ts
+│   │   ├── page.tsx
+│   │   ├── layout.tsx
+│   │   └── favicon.ico
+│   ├── components/
+│   │   └── ChatInterface.tsx
+│   └── styles/
+│       └── globals.css
 ├── public/
-│   └── soccer-pattern.png
-├── styles/
+│   └── soccer-pattern.jpg
 └── package.json
 ```
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgments
 
