@@ -1,6 +1,6 @@
 # Soccer Guru - AI-Powered Soccer Knowledge Chatbot
 
-![Soccer Guru Logo](public/soccer-pattern.png)
+![Soccer Guru Logo](public/soccer-pattern.jpg)
 
 ## Overview
 
