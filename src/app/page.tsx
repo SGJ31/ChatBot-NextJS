@@ -19,6 +19,7 @@ const CATEGORIES = [
 ];
 
 export default function ChatbotPage() {
+  const [isMounted, setIsMounted] = useState(false);
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -29,6 +30,7 @@ export default function ChatbotPage() {
   const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
+    setIsMounted(true);
     fetch('/api/chatbot')
       .then(res => {
         if (!res.ok) throw new Error('Network response was not ok');
@@ -40,6 +42,10 @@ export default function ChatbotPage() {
         setAllQuestions([]);
       });
   }, []);
+
+  if (!isMounted) {
+    return null; // o un componente de carga
+  }
 
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -118,14 +124,14 @@ export default function ChatbotPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-600 to-green-800 flex items-center justify-center p-4 bg-[url('/soccer-pattern.png')] bg-repeat">
-      <div className="bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-2xl w-full max-w-2xl border border-green-200">
+    <div className="min-h-screen bg-gradient-to-b from-green-600 to-green-800 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center p-4 bg-[url('/soccer-pattern.png')] bg-repeat">
+      <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm p-8 rounded-2xl shadow-2xl w-full max-w-2xl border border-green-200 dark:border-gray-700">
         <div className="flex items-center justify-center mb-8">
           <div className="relative">
-            <h1 className="text-4xl font-bold text-green-800 flex items-center gap-3">
+            <h1 className="text-4xl font-bold text-green-800 dark:text-green-200 flex items-center gap-3">
               ⚽ Soccer Guru
             </h1>
-            <span className="absolute -top-1 -right-7 bg-green-500 text-white font-black text-xs px-2 py-1 rounded-full">AI</span>
+            <span className="absolute -top-1 -right-7 bg-green-500 dark:bg-green-600 text-white font-black text-xs px-2 py-1 rounded-full">AI</span>
           </div>
         </div>
 
@@ -137,8 +143,8 @@ export default function ChatbotPage() {
               onClick={() => selectedCategory === category.name ? setSelectedCategory('') : setSelectedCategory(category.name)}
               className={`px-4 py-2 rounded-full text-sm flex items-center gap-2 transition-all ${
                 selectedCategory === category.name
-                  ? 'bg-green-600 text-white'
-                  : 'bg-green-100 text-green-800 hover:bg-green-200'
+                  ? 'bg-green-600 dark:bg-green-700 text-white'
+                  : 'bg-green-100 dark:bg-gray-700 text-green-800 dark:text-gray-200 hover:bg-green-200 dark:hover:bg-gray-600'
               }`}
             >
               <span>{category.icon}</span>
@@ -149,7 +155,7 @@ export default function ChatbotPage() {
 
         {/* Sugerencias rápidas */}
         <div className="mb-6">
-          <h3 className="text-green-800 font-medium mb-3 flex items-center gap-2">
+          <h3 className="text-green-800 dark:text-green-200 font-medium mb-3 flex items-center gap-2">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
@@ -160,10 +166,10 @@ export default function ChatbotPage() {
               <button
                 key={index}
                 onClick={() => setQuestion(suggestion.text)}
-                className="text-left px-4 py-3 bg-white rounded-xl border border-green-200 hover:border-green-400 transition-all flex items-center gap-2"
+                className="text-left px-4 py-3 bg-white dark:bg-gray-700 rounded-xl border border-green-200 dark:border-gray-600 hover:border-green-400 dark:hover:border-gray-500 transition-all flex items-center gap-2"
               >
                 <span className="text-xl">{suggestion.icon}</span>
-                <span className="text-sm text-gray-700">{suggestion.text}</span>
+                <span className="text-sm text-gray-700 dark:text-gray-200">{suggestion.text}</span>
               </button>
             ))}
           </div>
@@ -176,32 +182,32 @@ export default function ChatbotPage() {
               placeholder="¿Qué quieres saber sobre fútbol?"
               value={question}
               onChange={handleInputChange}
-              className="w-full border-2 border-green-300 rounded-full px-6 py-4 mb-2 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all text-gray-700 bg-white/80 backdrop-blur-sm"
+              className="w-full border-2 border-green-300 dark:border-gray-600 rounded-full px-6 py-4 mb-2 focus:outline-none focus:border-green-500 dark:focus:border-green-400 focus:ring-2 focus:ring-green-200 dark:focus:ring-gray-600 transition-all text-gray-700 dark:text-gray-200 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm"
               disabled={isLoading}
             />
             {suggestions.length > 0 && (
-              <div className="absolute z-10 w-full bg-white/95 backdrop-blur-sm border border-green-200 rounded-2xl mt-1 shadow-xl max-h-60 overflow-y-auto">
+              <div className="absolute z-10 w-full bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border border-green-200 dark:border-gray-600 rounded-2xl mt-1 shadow-xl max-h-60 overflow-y-auto">
                 {suggestions.map((suggestion, index) => (
                   <div
                     key={index}
-                    className="px-6 py-3 hover:bg-green-50 cursor-pointer transition-colors border-b border-green-100 last:border-b-0"
+                    className="px-6 py-3 hover:bg-green-50 dark:hover:bg-gray-700 cursor-pointer transition-colors border-b border-green-100 dark:border-gray-600 last:border-b-0"
                     onClick={() => handleSuggestionClick(suggestion)}
                   >
-                    {suggestion}
+                    <span className="text-gray-700 dark:text-gray-200">{suggestion}</span>
                   </div>
                 ))}
               </div>
             )}
           </div>
           {error && (
-            <div className="text-red-500 text-sm mb-2 px-4">
+            <div className="text-red-500 dark:text-red-400 text-sm mb-2 px-4">
               {error}
             </div>
           )}
           <button
             type="submit"
             disabled={isLoading || !question.trim() || (answer !== '')}
-            className={`w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-4 rounded-full font-medium hover:from-green-700 hover:to-green-800 transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center ${
+            className={`w-full bg-gradient-to-r from-green-600 to-green-700 dark:from-green-700 dark:to-green-800 text-white py-4 rounded-full font-medium hover:from-green-700 hover:to-green-800 dark:hover:from-green-800 dark:hover:to-green-900 transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center ${
               (isLoading || !question.trim() || (answer !== '')) ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
@@ -223,14 +229,14 @@ export default function ChatbotPage() {
         </form>
 
         {answer && (
-          <div className="p-6 bg-green-50 rounded-2xl border border-green-200 shadow-inner">
-            <h2 className="font-semibold text-green-800 mb-3 flex items-center gap-2">
+          <div className="p-6 bg-green-50 dark:bg-gray-700 rounded-2xl border border-green-200 dark:border-gray-600 shadow-inner">
+            <h2 className="font-semibold text-green-800 dark:text-green-200 mb-3 flex items-center gap-2">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
               Respuesta del Guru
               {selectedCategory && (
-                <span className="text-sm font-normal bg-green-600 text-white px-2 py-1 rounded-full flex items-center gap-1">
+                <span className="text-sm font-normal bg-green-600 dark:bg-green-700 text-white px-2 py-1 rounded-full flex items-center gap-1">
                   {CATEGORIES.find(cat => cat.name === selectedCategory)?.icon}
                   {selectedCategory}
                 </span>
@@ -243,9 +249,9 @@ export default function ChatbotPage() {
                 </span>
               )}
             </h2>
-            <div className="text-gray-700 whitespace-pre-wrap leading-relaxed bg-white/50 rounded-xl p-4 border border-green-100">
+            <div className="text-gray-700 dark:text-gray-200 whitespace-pre-wrap leading-relaxed bg-white/50 dark:bg-gray-600/50 rounded-xl p-4 border border-green-100 dark:border-gray-500">
               {selectedCategory && (
-                <div className="mb-2 text-sm text-green-600 italic">
+                <div className="mb-2 text-sm text-green-600 dark:text-green-400 italic">
                   Respondiendo desde la perspectiva de {selectedCategory.toLowerCase()}...
                 </div>
               )}
@@ -256,7 +262,7 @@ export default function ChatbotPage() {
 
         {/* Indicador de categoría seleccionada */}
         {selectedCategory && !answer && (
-          <div className="text-center text-green-600 text-sm mt-4 bg-green-50 py-2 px-4 rounded-full inline-block">
+          <div className="text-center text-green-600 dark:text-green-400 text-sm mt-4 bg-green-50 dark:bg-gray-700 py-2 px-4 rounded-full inline-block">
             <span className="mr-2">📌</span>
             Preguntas enfocadas en: {selectedCategory}
           </div>
